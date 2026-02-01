@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  orchestrator:
+    build:
+      context: ./core-orchestrator
+      dockerfile: Dockerfile
+    container_name: world_physical_orchestrator
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./core-orchestrator/.env
+    environment:
+      - PORT=8080
+      - ENV=sandbox
+    restart: unless-stopped
+    networks:
+      - world_physical_net
+  # Optional: Future Redis for reliable event streaming
+  # redis:
+  #   image: redis:alpine
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - world_physical_net
+
+networks:
+  world_physical_net:
+    driver: bridge
