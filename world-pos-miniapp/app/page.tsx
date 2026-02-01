@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { CheckCircle2, QrCode, Smartphone } from "lucide-react";
+import { useState } from "react";
+import { Check, QrCode } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -11,7 +11,6 @@ export default function Home() {
     const handleCharge = () => {
         if (!amount) return;
         setStep("QR");
-        // Simulate payment confirmation after 4 seconds
         setTimeout(() => {
             setStep("SUCCESS");
         }, 4000);
@@ -25,75 +24,74 @@ export default function Home() {
     const KeypadButton = ({ val }: { val: string }) => (
         <button
             onClick={() => setAmount((prev) => prev + val)}
-            className="h-16 w-full rounded-2xl glass text-2xl font-light text-white hover:bg-white/10 active:scale-95 transition-all duration-200 border border-white/5"
+            className="h-16 w-full rounded-xl bg-[#111] text-2xl font-normal text-white hover:bg-[#222] active:scale-95 transition-all border border-white/5 active:border-[#00FF57]/50"
         >
             {val}
         </button>
     );
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center p-4 font-sans text-white relative overflow-hidden">
-            {/* Background Decor */}
-            <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-green-500/10 rounded-full blur-[120px]" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px]" />
+        <main className="flex min-h-screen flex-col items-center justify-center p-4 font-sans text-white relative overflow-hidden bg-black">
+
+            {/* Ambient Glows to match render */}
+            <div className="absolute top-[-20%] left-[20%] w-[300px] h-[300px] bg-[#00FF57]/10 rounded-full blur-[100px]" />
 
             <div className="w-full max-w-sm relative z-10">
 
                 {/* Device Container */}
-                <div className="glass-card overflow-hidden rounded-[2.5rem] shadow-2xl">
+                <div className="glass-card overflow-hidden rounded-[40px] border border-white/10">
 
-                    {/* Header */}
-                    <div className="flex items-center justify-between border-b border-white/5 p-6">
-                        <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-full bg-white text-black flex items-center justify-center font-black text-lg shadow-lg shadow-white/20">W</div>
-                            <span className="text-xl font-medium tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">World POS</span>
-                        </div>
+                    {/* Header Bar */}
+                    <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
+                        {/* Logo */}
                         <div className="flex items-center gap-2">
-                            <div className="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse" />
-                            <span className="text-xs text-green-500 font-medium">ONLINE</span>
+                            <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center bg-black">
+                                <div className="w-4 h-4 rounded-full border border-white"></div>
+                            </div>
+                            <span className="font-semibold text-lg tracking-tight">World POS</span>
                         </div>
+                        {/* Status Light */}
+                        <div className="w-12 h-1 bg-[#00FF57] rounded-full shadow-[0_0_10px_#00FF57]" />
                     </div>
 
                     {/* Content Area */}
-                    <div className="relative h-[580px] p-6 flex flex-col">
+                    <div className="relative h-[600px] p-6 flex flex-col">
                         <AnimatePresence mode="wait">
 
                             {/* IDLE / AMOUNT STATE */}
                             {(step === "IDLE" || step === "AMOUNT") && (
                                 <motion.div
                                     key="input"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
                                     exit={{ opacity: 0, x: -20 }}
                                     className="flex h-full flex-col justify-between"
                                 >
-                                    <div className="flex flex-col gap-2 pt-8 text-center">
-                                        <span className="text-gray-400 text-sm uppercase tracking-widest font-medium">Total Amount</span>
-                                        <div className="text-6xl font-light tracking-tighter text-white drop-shadow-xl">
-                                            <span className="text-3xl opacity-50 align-top mr-1">€</span>
-                                            {amount || "0.00"}
+                                    <div className="flex flex-col items-center pt-10 gap-2">
+                                        <span className="text-[#00FF57] text-3xl font-light">€ {amount || "0.00"}</span>
+                                    </div>
+
+                                    <div className="w-full space-y-4">
+                                        <button
+                                            onClick={handleCharge}
+                                            disabled={!amount}
+                                            className="w-full h-16 rounded-xl bg-[#00FF57] text-black text-xl font-bold shadow-[0_0_20px_rgba(0,255,87,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none disabled:bg-gray-800 disabled:text-gray-500"
+                                        >
+                                            Charge
+                                        </button>
+
+                                        <div className="grid grid-cols-3 gap-3">
+                                            {["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0"].map((k) => (
+                                                <KeypadButton key={k} val={k} />
+                                            ))}
+                                            <button
+                                                onClick={() => setAmount((prev) => prev.slice(0, -1))}
+                                                className="flex h-16 w-full items-center justify-center rounded-xl bg-[#111] text-white hover:bg-[#222]"
+                                            >
+                                                ←
+                                            </button>
                                         </div>
                                     </div>
-
-                                    <div className="grid grid-cols-3 gap-3 mt-8">
-                                        {["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0"].map((k) => (
-                                            <KeypadButton key={k} val={k} />
-                                        ))}
-                                        <button
-                                            onClick={() => setAmount((prev) => prev.slice(0, -1))}
-                                            className="flex h-16 w-full items-center justify-center rounded-2xl glass text-white hover:bg-white/10 active:scale-95 transition-all"
-                                        >
-                                            ←
-                                        </button>
-                                    </div>
-
-                                    <button
-                                        onClick={handleCharge}
-                                        disabled={!amount}
-                                        className="mt-6 w-full rounded-2xl bg-white py-4 text-lg font-bold text-black shadow-lg shadow-white/10 disabled:opacity-50 disabled:shadow-none hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
-                                    >
-                                        Charge Card
-                                    </button>
                                 </motion.div>
                             )}
 
@@ -101,31 +99,20 @@ export default function Home() {
                             {step === "QR" && (
                                 <motion.div
                                     key="qr"
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
                                     exit={{ opacity: 0, scale: 1.1 }}
-                                    className="flex h-full flex-col items-center justify-center gap-8 text-center"
+                                    className="flex h-full flex-col items-center justify-center text-center pb-20"
                                 >
-                                    <div className="relative p-6 bg-white rounded-3xl shadow-[0_0_40px_rgba(255,255,255,0.1)]">
-                                        <QrCode className="h-48 w-48 text-black" />
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                                            <div className="h-16 w-16 rounded-full bg-black" />
-                                        </div>
-                                        {/* Corners */}
-                                        <div className="absolute top-4 left-4 w-6 h-6 border-t-4 border-l-4 border-black rounded-tl-lg" />
-                                        <div className="absolute top-4 right-4 w-6 h-6 border-t-4 border-r-4 border-black rounded-tr-lg" />
-                                        <div className="absolute bottom-4 left-4 w-6 h-6 border-b-4 border-l-4 border-black rounded-bl-lg" />
-                                        <div className="absolute bottom-4 right-4 w-6 h-6 border-b-4 border-r-4 border-black rounded-br-lg" />
+                                    <p className="text-gray-400 mb-6 font-light">Scan with World App</p>
+
+                                    <div className="relative p-4 bg-white rounded-3xl shadow-[0_0_30px_rgba(255,255,255,0.1)] mb-8">
+                                        <QrCode className="h-56 w-56 text-black" strokeWidth={1.5} />
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Scan to Pay</h3>
-                                        <p className="text-sm text-gray-400">Open World App to confirm payment</p>
-                                    </div>
-
-                                    <div className="flex items-center gap-3 rounded-full glass px-5 py-3 text-xs text-gray-300">
-                                        <div className="h-2 w-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                                        Waiting for settlement...
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 bg-[#00FF57] rounded-full animate-pulse" />
+                                        <span className="text-sm text-gray-400">Waiting for confirmation...</span>
                                     </div>
                                 </motion.div>
                             )}
@@ -134,39 +121,24 @@ export default function Home() {
                             {step === "SUCCESS" && (
                                 <motion.div
                                     key="success"
-                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="flex h-full flex-col items-center justify-center gap-10 text-center"
+                                    className="flex h-full flex-col items-center justify-center text-center pb-10"
                                 >
-                                    <div className="relative">
-                                        <div className="absolute inset-0 bg-green-500/30 blur-[40px] rounded-full" />
-                                        <div className="relative flex h-32 w-32 items-center justify-center rounded-full glass border-green-500/20 text-green-400">
-                                            <CheckCircle2 className="h-16 w-16 drop-shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
-                                        </div>
+                                    {/* Green Check Animation */}
+                                    <div className="mb-8 relative">
+                                        <div className="absolute inset-0 bg-[#00FF57]/20 blur-2xl rounded-full" />
+                                        <Check className="w-32 h-32 text-[#00FF57] drop-shadow-[0_0_15px_rgba(0,255,87,0.8)]" strokeWidth={3} />
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <h2 className="text-3xl font-bold text-white tracking-tight">Payment Received</h2>
-                                        <p className="text-xl text-gray-300 font-light">{amount} USDC Settled</p>
-                                    </div>
+                                    <h2 className="text-[#00FF57] text-3xl font-bold mb-2">Payment Received</h2>
+                                    <p className="text-white text-lg font-light mb-12">{amount} USDC Settled</p>
 
-                                    <div className="w-full rounded-2xl glass p-5 text-left space-y-3">
-                                        <div className="flex justify-between border-b border-white/10 pb-3">
-                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Transaction Hash</span>
-                                            <span className="font-mono text-xs text-green-400">0x7f2...9a1</span>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs text-gray-400 uppercase tracking-widest">Network</span>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-2 h-2 rounded-full bg-blue-500" />
-                                                <span className="text-sm text-white">World Chain</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#00FF57]/50 to-transparent mb-12" />
 
                                     <button
                                         onClick={reset}
-                                        className="w-full rounded-2xl bg-white py-4 font-bold text-black hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-white/10"
+                                        className="w-full h-14 rounded-xl border border-[#00FF57]/30 text-[#00FF57] hover:bg-[#00FF57]/10 transition-all font-medium uppercase tracking-wider text-sm"
                                     >
                                         New Charge
                                     </button>
@@ -175,13 +147,10 @@ export default function Home() {
 
                         </AnimatePresence>
                     </div>
-                </div>
-            </div>
 
-            <div className="mt-8 flex gap-2 text-[10px] text-gray-600 uppercase tracking-widest opacity-50">
-                <span>Powered by World Physical Layer</span>
-                <span>•</span>
-                <span>v0.9 Alpha Sandbox</span>
+                    {/* Bottom Bar Indicator */}
+                    <div className="h-1 w-1/3 mx-auto bg-gray-800 rounded-full mb-4" />
+                </div>
             </div>
         </main>
     );
